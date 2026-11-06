@@ -124,6 +124,7 @@ pub fn move_to_recycle_bin<P: AsRef<Path>>(path: P) -> Result<(), String> {
     const FOF_NOCONFIRMATION: u16 = 0x0010;
     const FOF_SILENT: u16 = 0x0004;
 
+    #[link(name = "shell32")]
     extern "system" {
         fn SHFileOperationW(lpFileOp: *mut SHFILEOPSTRUCTW) -> i32;
     }
