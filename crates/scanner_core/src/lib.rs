@@ -11,6 +11,7 @@ pub mod cache;
 pub mod classifier;
 pub mod dedup;
 pub mod models;
+pub mod remediation;
 pub mod security;
 pub mod win32;
 
