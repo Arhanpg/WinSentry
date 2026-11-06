@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WinSentry Control Center</title>
+<style>
+:root {
+  --bg-dark: #0f172a;
+  --card-bg: #1e293b;
+  --accent-safe: #22c55e;
+  --accent-review: #f59e0b;
+  --accent-security: #ef4444;
+  --accent-blue: #38bdf8;
+  --border: #334155;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+body { background: var(--bg-dark); color: var(--text); padding: 24px; }
+.header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 24px; }
+h1 { font-size: 24px; color: var(--accent-blue); display: flex; align-items: center; gap: 8px; }
+.btn { background: #0284c7; color: white; border: none; border-radius: 6px; padding: 10px 20px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.btn:hover { background: #0369a1; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+.card-title { font-size: 13px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+.card-value { font-size: 28px; font-weight: 700; }
+.c-safe { color: var(--accent-safe); }
+.c-review { color: var(--accent-review); }
+.c-sec { color: var(--accent-security); }
+.c-blue { color: var(--accent-blue); }
+.console { background: #0b1120; border: 1px solid var(--border); border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; color: #a5f3fc; height: 320px; overflow-y: auto; white-space: pre-wrap; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>WinSentry Control Center</h1>
+    <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">High-Velocity Storage Reclamation and Security Engine</p>
+  </div>
+  <button class="btn" onclick="startScan()">Launch Scan Now</button>
+</div>
+
+<div class="stats-grid">
+  <div class="card">
+    <div class="card-title">Files Scanned</div>
+    <div class="card-value c-blue" id="stat-files">-</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Physical Space (NTFS)</div>
+    <div class="card-value c-blue" id="stat-phys">-</div>
+  </div>
+  <div class="card">
+    <div class="card-title">[SAFE] Reclaimable Space</div>
+    <div class="card-value c-safe" id="stat-safe">-</div>
+  </div>
+  <div class="card">
+    <div class="card-title">[REVIEW] Contextual Space</div>
+    <div class="card-value c-review" id="stat-review">-</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Security & Vulnerability Alerts</div>
+    <div class="card-value c-sec" id="stat-sec">-</div>
+  </div>
+</div>
+
+<h2 style="font-size: 16px; margin-bottom: 12px;">Live Execution Logs</h2>
+<div class="console" id="log-console">Ready. Click 'Launch Scan Now' to start scanning.</div>
+
+<script>
+function formatBytes(bytes) {
+  if (!bytes || bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+async function startScan() {
+  const consoleEl = document.getElementById('log-console');
+  consoleEl.textContent = "Initiating WinSentry Scan across workspace...\nConnecting to Win32 Kernel32 & Advapi32 subsystem...\n";
+  try {
+    const res = await fetch('/api/scan');
+    const data = await res.json();
+    document.getElementById('stat-files').textContent = data.summary.total_files_scanned;
+    document.getElementById('stat-phys').textContent = formatBytes(data.summary.total_physical_bytes);
+    document.getElementById('stat-safe').textContent = formatBytes(data.summary.safe_reclaimable_bytes);
+    document.getElementById('stat-review').textContent = formatBytes(data.summary.review_reclaimable_bytes);
+    document.getElementById('stat-sec').textContent = data.summary.security_findings_count;
+
+    consoleEl.textContent += `[COMPLETED] Scan finished in ${data.summary.scan_duration_ms} ms.\n` +
+      `  * Files Scanned: ${data.summary.total_files_scanned}\n` +
+      `  * [SAFE] Reclaimable: ${formatBytes(data.summary.safe_reclaimable_bytes)}\n` +
+      `  * [REVIEW] Reclaimable: ${formatBytes(data.summary.review_reclaimable_bytes)}\n` +
+      `  * Security Findings: ${data.summary.security_findings_count}\n` +
+      `  * Critical Vulnerabilities: ${data.summary.critical_vulnerabilities_count}\n`;
+  } catch (err) {
+    consoleEl.textContent += `[ERROR] Failed to execute scan: ${err}\n`;
+  }
+}
+</script>
+</body>
+</html>
