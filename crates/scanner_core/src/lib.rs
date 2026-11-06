@@ -7,6 +7,7 @@
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const APP_NAME: &str = "WinSentry";
 
+pub mod classifier;
 pub mod models;
 pub mod win32;
 
