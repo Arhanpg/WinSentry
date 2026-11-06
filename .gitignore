@@ -1,0 +1,32 @@
+# Binaries and build artifacts
+target/
+Cargo.lock
+
+# Operating System and Document files
+*.docx
+extracted_doc.txt
+*.pdf
+Thumbs.db
+Desktop.ini
+
+# Python / Scripts
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+
+# IDE / Editor artifacts
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Output test files & reports
+scan_report*.html
+scan_report*.json
+scan_report*.csv
+quarantine/
+*.log
+*.tmp
