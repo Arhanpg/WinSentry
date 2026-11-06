@@ -10,6 +10,7 @@ pub const APP_NAME: &str = "WinSentry";
 pub mod classifier;
 pub mod dedup;
 pub mod models;
+pub mod security;
 pub mod win32;
 
 
