@@ -12,6 +12,7 @@ pub mod classifier;
 pub mod dedup;
 pub mod models;
 pub mod remediation;
+pub mod reporting;
 pub mod security;
 pub mod win32;
 
