@@ -76,9 +76,14 @@ pub fn find_duplicates(
     minimal_file_size: u64,
     reference_folders: &[std::path::PathBuf],
 ) -> Vec<DuplicateGroup> {
-    // 0. Mark Reference Folders
+    // 0. Mark Reference Folders with extended path normalization
+    let ext_ref_folders: Vec<std::path::PathBuf> = reference_folders
+        .iter()
+        .map(|r| crate::win32::to_extended_path(r))
+        .collect();
+
     for file in files.iter_mut() {
-        for ref_dir in reference_folders {
+        for ref_dir in &ext_ref_folders {
             if file.path.starts_with(ref_dir) {
                 file.is_in_reference_folder = true;
                 break;

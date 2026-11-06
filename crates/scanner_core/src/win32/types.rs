@@ -275,8 +275,8 @@ pub struct VS_FIXEDFILEINFO {
 }
 
 // FFI External Function Declarations
+#[link(name = "kernel32")]
 extern "system" {
-    // Kernel32
     pub fn FindFirstFileExW(
         lpFileName: LPCWSTR,
         fInfoLevelId: FINDEX_INFO_LEVELS,
@@ -327,8 +327,10 @@ extern "system" {
     pub fn GetLogicalDrives() -> DWORD;
     pub fn QueryDosDeviceW(lpDeviceName: LPCWSTR, lpTargetPath: LPWSTR, ucchMax: DWORD) -> DWORD;
     pub fn GetVolumePathNameW(lpszFileName: LPCWSTR, lpszVolumePathName: LPWSTR, cchBufferLength: DWORD) -> BOOL;
+}
 
-    // Advapi32
+#[link(name = "advapi32")]
+extern "system" {
     pub fn GetNamedSecurityInfoW(
         pObjectName: LPCWSTR,
         ObjectType: SE_OBJECT_TYPE,
@@ -342,16 +344,22 @@ extern "system" {
 
     pub fn ConvertSidToStringSidW(Sid: PSID, StringSid: *mut LPWSTR) -> BOOL;
     pub fn LocalFree(hMem: *mut c_void) -> *mut c_void;
+}
 
-    // Version.dll
+#[link(name = "version")]
+extern "system" {
     pub fn GetFileVersionInfoSizeW(lptstrFilename: LPCWSTR, lpdwHandle: LPDWORD) -> DWORD;
     pub fn GetFileVersionInfoW(lptstrFilename: LPCWSTR, dwHandle: DWORD, dwLen: DWORD, lpData: LPVOID) -> BOOL;
     pub fn VerQueryValueW(pBlock: LPCVOID, lpSubBlock: LPCWSTR, lplpBuffer: *mut LPVOID, puLen: *mut u32) -> BOOL;
+}
 
-    // Wintrust.dll
+#[link(name = "wintrust")]
+extern "system" {
     pub fn WinVerifyTrust(hwnd: HANDLE, pgActionID: *const GUID, pWVTData: *mut WINTRUST_DATA) -> i32;
+}
 
-    // Rstrtmgr.dll (Restart Manager)
+#[link(name = "rstrtmgr")]
+extern "system" {
     pub fn RmStartSession(pSessionHandle: *mut DWORD, dwSessionFlags: DWORD, strSessionKey: LPWSTR) -> DWORD;
     pub fn RmRegisterResources(
         dwSessionHandle: DWORD,
