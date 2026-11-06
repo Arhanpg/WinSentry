@@ -1,0 +1,17 @@
+[package]
+name = "winsentry_cli"
+version = "0.1.0"
+edition = "2021"
+authors = ["Arhan Ghosarwade <arhanghosarwade05@gmail.com>"]
+description = "WinSentry CLI - High-speed Windows storage reclamation and endpoint security auditor"
+license = "MIT"
+
+[[bin]]
+name = "winsentry"
+path = "src/main.rs"
+
+[dependencies]
+scanner_core = { path = "../scanner_core" }
+clap = { version = "4.5", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"

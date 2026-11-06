@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "crates/scanner_core",
+    "crates/winsentry_cli",
+]
+resolver = "2"
